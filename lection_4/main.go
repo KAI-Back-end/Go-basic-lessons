@@ -9,7 +9,7 @@ const maxPoolConn = 3
 type Server struct{}
 
 // Функ-ия, которая обрабатывает запрос пользователя.
-func (s *Server) ServeUsers(userID int64) string {
+func (s *Server) ServeUser(userID int64) string {
 	// какая-то полезная нагрузка
 	return fmt.Sprintf("User %d is served", userID)
 }
