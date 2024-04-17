@@ -15,4 +15,17 @@ func (s *Server) ServeUser(userID int64) string {
 }
 
 // Функ-ия, ответственная за обработку поступающих запросов пользователей приложения.
-func Serve(req <-chan int64) {}
+func Serve(req <-chan int64) {
+	server := &Server{}
+	query := make(chan int64, maxPoolConn)
+
+	for currReq := range req {
+		query <- currReq
+
+		go func() {
+			userID := <-query
+			fmt.Println(server.ServeUser(userID))
+		}()
+	}
+
+}
