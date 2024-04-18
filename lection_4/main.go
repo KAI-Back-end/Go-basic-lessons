@@ -18,22 +18,16 @@ func (s *Server) ServeUser(userID int64) string {
 func Serve(req <-chan int64) {
 	server := &Server{}
 	ch := make(chan int64, maxPoolConn)
-	count := 0
 
 	for cur := range req {
 		ch <- int64(cur)
 
-		if count >= maxPoolConn {
-			time.Sleep(5 * time.Second)
-		}
+		go func(cr int64, c <-chan int64) {
 
-		go func() {
-			count = count + 1
-			fmt.Println(server.ServeUser(<-ch))
-			fmt.Println(count)
-			time.Sleep(1 * time.Second)
-			count = count - 1
-		}()
+			fmt.Println(server.ServeUser(cr))
+			<-c
+
+		}(cur, ch)
 	}
 }
 
