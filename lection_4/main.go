@@ -17,12 +17,12 @@ func (s *Server) ServeUser(userID int64) string {
 // Функ-ия, ответственная за обработку поступающих запросов пользователей приложения.
 func Serve(req <-chan int64) {
 	server := &Server{}
-	ch := make(chan int64, maxPoolConn)
+	ch := make(chan struct{}, maxPoolConn)
 
 	for cur := range req {
-		ch <- int64(cur)
+		ch <- struct{}{}
 
-		go func(cr int64, c <-chan int64) {
+		go func(cr int64, c <-chan struct{}) {
 
 			fmt.Println(server.ServeUser(cr))
 			<-c
